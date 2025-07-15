@@ -12,19 +12,17 @@ local Tostring 		= buffer.tostring
 local Extract 		= bit32.extract
 local Lshift 		= bit32.lshift
 local Rshift 		= bit32.rshift
-local Band 			= bit32.band
+local Band 		= bit32.band
 
 local Findstring	= string.find
-local CharString 	= string.char
 local ByteString 	= string.byte
-local GsubString 	= string.gsub
 local SubString 	= string.sub
 
 local Concat 		= table.concat
 local Create 		= table.create
 local Insert 		= table.insert
 
-local Ceil 			= math.ceil
+local Ceil 		= math.ceil
 
 local alphabet 		= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 local strfinde		= '4":"(.+)"'
@@ -37,7 +35,7 @@ local Base64 		= {}
 
 local function EncodeBase64(input)
 	
-	local len 		= #input
+	local len 	= #input
 	
 	local output 	= Create(Ceil(len * 4 / 3))
 	
@@ -52,11 +50,11 @@ local function EncodeBase64(input)
 
 		local n = Lshift(bytes[i], 16) + Lshift(b1 or 0, 8) + (b2 or 0)
 		
-		Insert(output, 			Base64[Extract(n, 18, 6)]				)
-		Insert(output, 			Base64[Extract(n, 12, 6)]				)
+		Insert(output, 		Base64[Extract(n, 18, 6)]		)
+		Insert(output, 		Base64[Extract(n, 12, 6)]		)
 		
-		Insert(output, b1 and 	Base64[Extract(n, 6	, 6)] or equalstr	)
-		Insert(output, b2 and 	Base64[Extract(n, 0	, 6)] or equalstr	)
+		Insert(output, b1 and 	Base64[Extract(n, 6 , 6)] or equalstr	)
+		Insert(output, b2 and 	Base64[Extract(n, 0 , 6)] or equalstr	)
 		
 	end
 
