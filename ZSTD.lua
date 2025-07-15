@@ -1,5 +1,4 @@
 --!optimize 2
---!native
 
 local HttpService 	= game:GetService('HttpService')
 
@@ -25,35 +24,33 @@ local Insert 		= table.insert
 local Ceil 		= math.ceil
 
 local alphabet 		= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-local strfinde		= '4":"(.+)"'
-local izstdstr		= 'KLUv/'
 local equalstr 		= "="
 
-local ZStandard 	= {}
+local Compression 	= {}
 local Base64 		= {}
 
-local function EncodeBase64(input)
+local function EncodeBase64(input: string): string
 	
-	local len 	= #input
+	local lenght	= #input
 	
-	local output 	= Create(Ceil(len * 4 / 3))
+	local output 	= Create(Ceil(lenght * 4 / 3))
 	
-	local bytes 	= Create(len)
+	local bytes 	= Create(lenght)
 	
-	for i = 1, len do bytes[i] = ByteString(input, i) end
+	for i = 1, lenght do bytes[i] = ByteString(input, i) end
 
-	for i = 1, len, 3 do
+	for i = 1, lenght, 3 do
 		
 		local b1 = bytes[i + 1]
 		local b2 = bytes[i + 2]
 
 		local n = Lshift(bytes[i], 16) + Lshift(b1 or 0, 8) + (b2 or 0)
 		
-		Insert(output, 		Base64[Extract(n, 18, 6)]		)
-		Insert(output, 		Base64[Extract(n, 12, 6)]		)
+		Insert(output, Base64[Extract(n, 18, 6)])
+		Insert(output, Base64[Extract(n, 12, 6)])
 		
-		Insert(output, b1 and 	Base64[Extract(n, 6 , 6)] or equalstr	)
-		Insert(output, b2 and 	Base64[Extract(n, 0 , 6)] or equalstr	)
+		Insert(output, b1 and Base64[Extract(n, 6, 6)] or equalstr)
+		Insert(output, b2 and Base64[Extract(n, 0, 6)] or equalstr)
 		
 	end
 
@@ -61,28 +58,30 @@ local function EncodeBase64(input)
 	
 end
 
-local function DecodeBase64(Input)
+local function DecodeBase64(Input: string): string
 
 	return Tostring(JSONDecode(HttpService, `\{"m":null,"t":"buffer","base64":"{Input}"}`))
 
 end
 
-function ZStandard:Compress(Input)
+function Compression:Compress(Input: string): string
 	
-	local _, _, Result = Findstring(JSONEncode(HttpService, Fromstring(Input)), strfinde)
+	local _, _, Result = Findstring(JSONEncode(HttpService, Fromstring(Input)), '4":"(.+)"')
 	
 	return DecodeBase64(Result)
 	
 end
 
-function ZStandard:Decompress(Input)
+function Compression:Decompress(Input: string): string
 	
 	local Encoded = EncodeBase64(Input)
 	
-	return Tostring(JSONDecode(HttpService, `\{"m":null,"t":"buffer","{SubString(Encoded, 1, 5) == izstdstr and 'z' or ''}base64":"{Encoded}"}`))
+	local isZSTD = SubString(Encoded, 1, 5) == 'KLUv/' and 'z' or ''
+	
+	return Tostring(JSONDecode(HttpService, `\{"m":null,"t":"buffer","{isZSTD}base64":"{Encoded}"}`))
 
 end
 
 for i = 1, #alphabet do Base64[i - 1] = SubString(alphabet, i, i) end
 
-return ZStandard
+return Compression
