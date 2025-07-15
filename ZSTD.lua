@@ -28,7 +28,6 @@ local alphabet 		= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
 local strfinde		= '4":"(.+)"'
 local izstdstr		= 'KLUv/'
 local equalstr 		= "="
-local nilstr		= ''
 
 local ZStandard 	= {}
 local Base64 		= {}
