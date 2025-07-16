@@ -289,8 +289,8 @@ local Decode		= Base64.Decode
 
 local FromStr 		= buffer.fromstring
 local ToStr 		= buffer.tostring
-local Find			= string.find
-local Sub 			= string.sub
+local Find		= string.find
+local Sub 		= string.sub
 
 local Compression 	= {}
 
